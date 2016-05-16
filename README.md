@@ -6,9 +6,12 @@
  * BMP180
  * Buzzer
  * NodeMCU
+ * Accelerometer
+
+## Doing ##
+
+ * Webserver
 
 ## TODO ##
 
- * Webserver
  * Webclient
- * Accelerometer
