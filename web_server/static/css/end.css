@@ -1,6 +1,6 @@
 .outer {
-    width: 30px;
-    height: 600px;
+    width: 25px;
+    height: 450px;
     overflow: hidden;
 
     position: relative;
@@ -33,12 +33,12 @@
 }
 
 .blue {
-    margin-left: 890px;
+    margin-left: 800px;
     margin-top: 270px;
 }
 
 .red {
-    margin-left: 900px;
+    margin-left: 820px;
     margin-top: 270px;
 }
 
@@ -46,4 +46,8 @@
     font-family: skater;
     font-size: 72px;
     color: #8B2739;
+}
+
+body {
+    width: 1000px;
 }

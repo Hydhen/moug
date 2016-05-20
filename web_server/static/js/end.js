@@ -17,8 +17,23 @@ if (red > blue) {
     blue = "100%"
 }
 
-$('video').attr('src', '/static/mp4/' + videoName + '.mp4');
-$('video').load();
+function nextStep() {
+    localStorage.redScore = 5;
+    localStorage.blueScore = 5;
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+	if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+	    console.log(xmlHttp.responseText);
+    }
+    xmlHttp.open("GET", "/reset", true);
+    xmlHttp.send(null);
+    window.location.href = "/";
+}
+
+window.setTimeout(nextStep, 30000);
+
+$('#video').attr('src', '/static/mp4/' + videoName + '.mp4');
+$('#video').load();
 
 $('#blueScore').html(localStorage.blueScore);
 $('#redScore').html(localStorage.redScore);

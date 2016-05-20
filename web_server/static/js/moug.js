@@ -1,4 +1,4 @@
-var duration = localStorage.duration - 5
+var duration = Number(localStorage.duration) + 3
 
 var circle = new ProgressBar.Circle('#timer', {
     color: '#2F2B83',

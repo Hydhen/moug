@@ -69,7 +69,11 @@ def Reset():
 
     STATUS = False
     TIME = None
-    LIMIT_TIME, LIMIT_PLAYER, SCORE_RED, SCORE_BLUE = 0
+    LIMIT_TIME = 0
+    LIMIT_PLAYER = 0
+    SCORE_RED = 0
+    SCORE_BLUE = 0
+
     content = "ok"
     return jsonify(content=content)
 
