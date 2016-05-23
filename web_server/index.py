@@ -2,7 +2,8 @@
 
 from datetime       import datetime, time
 from time           import sleep
-from flask          import Flask, jsonify, request
+from flask          import Flask, jsonify, request, render_template
+
 import thread, threading
 
 app                 = Flask(__name__)
@@ -126,7 +127,7 @@ def Disconnection():
 def Index():
     global CLIENTS, RED_TEAM, BLUE_TEAM, STATUS, TIME
     content = "Something went wrong..."
-    time = datetime.now()
+    now = datetime.now()
 
     if STATUS == True :
         if TIME is not None :
@@ -134,11 +135,16 @@ def Index():
             content = "Game has started " + str(offset.seconds / 60) + "m " + str(offset.seconds % 60) + "s ago"
     else :
         content = "No game instantiated"
-    return jsonify(content=content,
-                   traffic=len(CLIENTS),
-                   teamRed=RED_TEAM,
-                   teamBlue=BLUE_TEAM,
-                   status=STATUS)
+    return render_template("index.html",
+                           content=content,
+                           traffic=len(CLIENTS),
+                           teamRed=RED_TEAM,
+                           teamBlue=BLUE_TEAM,
+                           status=STATUS)
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('err404.html'), 404
 
 if __name__ == "__main__":
     app.debug = True

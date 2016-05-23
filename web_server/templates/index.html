@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Moug's index{% endblock %}
+
+{% block content %}
+  <h1>Index</h1>
+  <h2>
+      {{ content }}
+      {% if status == False %}
+        <a href="/start">Start</a>
+      {% else %}
+        <a href="/status">Status</a>
+        <a href="/stop">Stop</a>
+      {% endif %}
+  </h2>
+  <p>
+    Traffic :
+    {{ traffic }}
+  </p>
+  <p>
+    Equipe bleu :
+    {{ teamBlue }}
+  </p>
+  <p>
+    Equipe rouge :
+    {{ teamRed }}
+  </p>
+  <p>
+    Etat de la partie :
+    {{ status }}
+  </p>
+{% endblock %}
