@@ -1,22 +1,28 @@
 #!/usr/bin/env python
 
 from datetime       import datetime, time
-from time           import sleep
 from flask          import Flask, jsonify, request, render_template
-
-import thread, threading
 
 app                 = Flask(__name__)
 
-CLIENTS             = []
 STATUS              = False
 TIME                = None
-SCORE_RED           = 0
-RED_TEAM            = []
-SCORE_BLUE          = 0
-BLUE_TEAM           = []
+
+LIMIT_TIME          = 0
+LIMIT_PLAYER        = 0
+
+CLIENTS             = []
+TEAM_RED            = []
+TEAM_BLUE           = []
 NEXT_TEAM           = "RED"
 
+SCORE_RED           = 0
+SCORE_BLUE          = 0
+
+
+#
+#   GET TRUE OR FALSE ACCORDING TO THE GAME STATUS
+#
 @app.route("/status", methods=['GET'])
 def Status():
     global CLIENTS, STATUS, TIME, TIME_LOCK, LAST_UPDATE
@@ -25,13 +31,18 @@ def Status():
 
     if STATUS == True :
         offset = time - TIME
-        content = "Game has been started for " + str(offset.seconds / 60) + "m " + str(offset.seconds % 60) + "s"
+        content = "Game has been started for " + str(offset.seconds / 60) + "m "\
+                  + str(offset.seconds % 60) + "s"
     else :
         content = "No game instantiated"
     return jsonify(content=content,
                    clients=CLIENTS,
                    status=STATUS)
 
+
+#
+#   STOP GAME COUNTER AND SET STATUS TO FALSE
+#
 @app.route("/stop", methods=['GET'])
 def Stop():
     global CLIENTS, STATUS, TIME
@@ -41,11 +52,16 @@ def Stop():
     if STATUS == True :
         offset = now - TIME
         STATUS = False
-        content = "Game last " + str(offset.seconds / 60) + "m " + str(offset.seconds % 60) + "s"
+        content = "Game lasts " + str(offset.seconds / 60) + "m "\
+                  + str(offset.seconds % 60) + "s"
     else :
         content = "No game instantiated"
     return jsonify(content=content)
 
+
+#
+#   START GAME COUNTER AND SET STATUS TO TRUE
+#
 @app.route("/start", methods=['GET'])
 def Start():
     global CLIENTS, STATUS, TIME, TIME_LOCK
@@ -61,17 +77,21 @@ def Start():
 
 @app.route("/list", methods=['GET'])
 def List():
-    global CLIENTS, RED_TEAM, BLUE_TEAM
+    global CLIENTS, TEAM_RED, TEAM_BLUE
 
     return jsonify(content="list",
                    traffic=len(CLIENTS),
                    clients=CLIENTS,
-                   teamBlue=BLUE_TEAM,
-                   teamRed=RED_TEAM)
+                   teamBlue=TEAM_BLUE,
+                   teamRed=TEAM_RED)
 
+
+#
+#   CONNECTION AND DISCONNECTION
+#
 @app.route("/connection", methods=['GET'])
 def Connection():
-    global CLIENTS, RED_TEAM, BLUE_TEAM, NEXT_TEAM
+    global CLIENTS, TEAM_RED, TEAM_BLUE, NEXT_TEAM
     content = "Something went wrong..."
     team = ""
 
@@ -85,12 +105,12 @@ def Connection():
             CLIENTS.append(client)
             content = "Connected as "
             if NEXT_TEAM == "RED" :
-                RED_TEAM.append(client)
+                TEAM_RED.append(client)
                 NEXT_TEAM = "BLUE"
                 content = content + "RED"
                 team = "RED"
             elif NEXT_TEAM == "BLUE" :
-                BLUE_TEAM.append(client)
+                TEAM_BLUE.append(client)
                 NEXT_TEAM = "RED"
                 content = content + "BLUE"
                 team = "BLUE"
@@ -111,11 +131,11 @@ def Disconnection():
         if client in CLIENTS :
             CLIENTS.remove(client)
             content = "Disconnected from "
-            if client in RED_TEAM :
-                RED_TEAM.remove(client)
+            if client in TEAM_RED :
+                TEAM_RED.remove(client)
                 content = content + "RED"
-            elif client in BLUE_TEAM :
-                BLUE_TEAM.remove(client)
+            elif client in TEAM_BLUE :
+                TEAM_BLUE.remove(client)
                 content = content + "BLUE"
             else :
                 content = content + "NEUTRAL"
@@ -123,28 +143,58 @@ def Disconnection():
             content = "Was not connected"
     return jsonify(content=content)
 
+
+#
+#   APPLY GAME SETTINGS
+#
+@app.route("/tutorial", methods=['POST'])
+def Tutorial():
+    global LIMIT_TIME, LIMIT_PLAYER
+    duration = request.form['duree']
+    participants = request.form['participants']
+    content = "Something went wrong..."
+
+    if duration > 0 and participants > 0 :
+        LIMIT_TIME = duration
+        LIMIT_PLAYER = participants
+        content = "Setted up for " + str(LIMIT_PLAYER) + " player and for "\
+                  + str(LIMIT_TIME) + " minutes"
+    return jsonify(content=content,
+                   duration=LIMIT_TIME,
+                   participants=LIMIT_PLAYER)
+
+
+#
+#   SET GAME RULES
+#
 @app.route("/", methods=['GET'])
 def Index():
-    global CLIENTS, RED_TEAM, BLUE_TEAM, STATUS, TIME
+    global CLIENTS, TEAM_RED, TEAM_BLUE, STATUS, TIME
     content = "Something went wrong..."
     now = datetime.now()
 
     if STATUS == True :
         if TIME is not None :
             offset = now - TIME
-            content = "Game has started " + str(offset.seconds / 60) + "m " + str(offset.seconds % 60) + "s ago"
+            content = "Game has started " + str(offset.seconds / 60) + "m "\
+                      + str(offset.seconds % 60) + "s ago"
     else :
         content = "No game instantiated"
     return render_template("index.html",
                            content=content,
                            traffic=len(CLIENTS),
-                           teamRed=RED_TEAM,
-                           teamBlue=BLUE_TEAM,
+                           teamRed=TEAM_RED,
+                           teamBlue=TEAM_BLUE,
                            status=STATUS)
 
+
+#
+#   404 HANDLER
+#
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('err404.html'), 404
+
 
 if __name__ == "__main__":
     app.debug = True
