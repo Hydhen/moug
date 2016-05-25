@@ -82,13 +82,14 @@
 
 <div class="form">
     <div class="container">
-        <form action="/tutorial" class="form-horizontal">
+        <form class="form-horizontal" method="post" action="{{ url_for('Tutorial') }}">
             <div class="form-group games-input-group">
                 <label class="col-sm-5 col-sm-offset-3 control-label" for="duree">
                     Durée de la partie :
                 </label>
                 <div class="col-sm-1">
-                    <input class="form-control games-input" id="duree" value="5">
+                    <input class="form-control games-input" id="duree"
+                           name="duree" value="5">
                 </div>
             </div>
             <div class="form-group games-input-group">
@@ -97,7 +98,8 @@
                     Nombre de participants :
                 </label>
                 <div class="col-sm-1">
-                    <input class="form-control games-input" id="participants" value="10">
+                    <input class="form-control games-input" id="participants"
+                           name="participants" value="10">
                 </div>
             </div>
             <button type="submit" class="col-md-4 col-md-offset-4 games-submit">
