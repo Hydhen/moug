@@ -1,0 +1,19 @@
+@font-face {
+    font-family: nexa;
+    src: url(../fonts/nexa-bold.otf);
+}
+
+.nexa {
+    font-family: nexa, Arial;
+    line-height: 100%;
+}
+
+@font-face {
+    font-family: proxima;
+    src: url(../fonts/proximanova-regular.otf);
+}
+
+.proxima {
+    font-family: proxima, Arial;
+    line-height: 100%;
+}
