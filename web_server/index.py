@@ -21,6 +21,14 @@ SCORE_BLUE          = 0
 
 
 #
+#   DISPLAY MOUG FACE
+#
+@app.route("/moug", methods=['GET'])
+def Moug():
+    return render_template("moug.html")
+
+
+#
 #   GET TRUE OR FALSE ACCORDING TO THE GAME STATUS
 #
 @app.route("/status", methods=['GET'])
