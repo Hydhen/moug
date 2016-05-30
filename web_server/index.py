@@ -75,6 +75,10 @@ def Start():
         content = "Game has already started"
     return jsonify(content=content)
 
+
+#
+#   LIST DEVICES IP CONNECTED
+#
 @app.route("/list", methods=['GET'])
 def List():
     global CLIENTS, TEAM_RED, TEAM_BLUE
@@ -159,9 +163,10 @@ def Tutorial():
         LIMIT_PLAYER = participants
         content = "Setted up for " + str(LIMIT_PLAYER) + " player and for "\
                   + str(LIMIT_TIME) + " minutes"
-    return jsonify(content=content,
-                   duration=LIMIT_TIME,
-                   participants=LIMIT_PLAYER)
+    return render_template("tutorial.html",
+                           content=content,
+                           duration=LIMIT_TIME,
+                           participants=LIMIT_PLAYER)
 
 
 #
