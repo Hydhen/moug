@@ -3,9 +3,10 @@ window.onload = function onLoad() {
         color: '#FFB600',
         strokeWidth: 11,
         trailWidth: 11,
-        duration: 30000,
+        duration: 3000,
     });
 
-    circle.animate(1);
-    $('#timer').width(114);
+    circle.animate(1, {}, function() {
+        alert("Game over");
+    });
 };

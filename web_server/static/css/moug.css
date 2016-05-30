@@ -1,10 +1,11 @@
 .timer {
-    height: 120px;
-    width: 120px;
+    position: absolute;
+    left: 126px;
+    top: 116px;
 }
 
 .timer > svg {
-    height: 120px;
-    width: 120px;
+    height: 114px;
+    width: 114px;
     display: block;
 }
