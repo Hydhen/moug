@@ -1,0 +1,10 @@
+.timer {
+    height: 120px;
+    width: 120px;
+}
+
+.timer > svg {
+    height: 120px;
+    width: 120px;
+    display: block;
+}
