@@ -162,6 +162,7 @@ def Disconnection():
 @app.route("/tutorial", methods=['POST'])
 def Tutorial():
     global LIMIT_TIME, LIMIT_PLAYER
+    id_game = request.form['id-game'];
     duration = request.form['duree']
     participants = request.form['participants']
     content = "Something went wrong..."
@@ -173,6 +174,7 @@ def Tutorial():
                   + str(LIMIT_TIME) + " minutes"
     return render_template("tutorial.html",
                            content=content,
+                           id_game=id_game,
                            duration=LIMIT_TIME,
                            participants=LIMIT_PLAYER)
 
