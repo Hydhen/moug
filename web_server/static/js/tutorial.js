@@ -1,6 +1,6 @@
 var videoIndex = 0;
 var videoList = [
-    'introduction',
+    'push-the-button',
     'instruction-1',
     'instruction-2',
     'team',
