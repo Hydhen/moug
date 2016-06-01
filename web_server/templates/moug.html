@@ -3,11 +3,16 @@
 {% block title %}Moug Face{% endblock %}
 
 {% block css %}
+<link href="{{ url_for('static', filename='css/utils-video.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='css/moug.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid">
+
+    <video id="video" class="bg-video" autoplay loop
+           src="{{ url_for('static', filename='mp4/moug-in-game.mp4') }}">
+    </video>
 
     <div id="timer" class="timer">
 
