@@ -3,7 +3,7 @@ window.onload = function onLoad() {
         color: '#FFB600',
         strokeWidth: 20,
         trailWidth: 20,
-        duration: 3000,
+        duration: 4000,
     });
 
     circle.animate(1, {}, function() {
