@@ -1,2 +1,3 @@
 .venv/
 web_server/static/mp4/*
+.DS_Store
