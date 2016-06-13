@@ -1,9 +1,10 @@
 var videoIndex = 0;
 var videoList = [
-    'push-the-button',
-    'instruction-1',
-    'instruction-2',
-    'team',
+    '02-introduction',
+    '03-push-the-button',
+    '04-instruction1',
+    '05-instruction2',
+    '06-count',
 ];
 
 document.getElementById('video').addEventListener('ended', nextStep, false);

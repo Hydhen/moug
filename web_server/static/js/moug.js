@@ -1,8 +1,8 @@
 window.onload = function onLoad() {
     var circle = new ProgressBar.Circle('#timer', {
-        color: '#FFB600',
-        strokeWidth: 20,
-        trailWidth: 20,
+        color: '#2F2B83',
+        strokeWidth: 13,
+        trailWidth: 13,
         duration: 4000,
     });
 
