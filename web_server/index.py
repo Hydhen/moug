@@ -90,6 +90,16 @@ def List():
 
 ################################## CLIENT ######################################
 
+#   RETURN OK IF THE GAME HAS STARTED
+@app.route("/wait", methods=['GET'])
+def Wait():
+    global STATUS
+    content = "nope"
+
+    if STATUS == True :
+        content = "ok"
+    return content
+
 #   COLLECT SCORE
 @app.route("/score/<int:score>", methods=['GET'])
 def Score(score):

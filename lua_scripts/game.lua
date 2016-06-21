@@ -20,6 +20,19 @@ STEP        = {
 }
 ID_STEP     = 1
 
+-- UTILS --
+function split(inputstr, sep)
+    if sep == nil then
+        sep = "%s"
+    end
+    local t={} ; i=1
+    for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+        t[i] = str
+        i = i + 1
+    end
+    return t
+end
+
 -- WIFI --
 function config()
     wifi.setmode(wifi.STATION)
@@ -45,8 +58,7 @@ function get()
         conn = net.createConnection(net.TCP, 0)
         print("== Set receive callback ==")
         conn:on("receive", function(sck, data)
-            RESPONSE = data
-            print(RESPONSE)
+            RESPONSE = split(data, '\n')
             tmr.stop(TMR_GET)
             tmr.start(TMR_MAIN)
         end)
@@ -83,6 +95,7 @@ tmr.start(TMR_WIFI)
 function main()
     if tmr.state(TMR_WIFI) == false then
         print(STEP[ID_STEP]..' '..tostring(PROBED))
+        print('RES: '..tostring(RESPONSE))
         if STEP[ID_STEP] == "CONN" then
             if PROBED == false then
                 GET = "/connection"
@@ -112,7 +125,7 @@ function main()
 
         elseif STEP[ID_STEP] == "SEND" then
             if PROBED == false then
-                GET = "/send/"..SCORE
+                GET = "/score/"..SCORE
                 PROBED = true
                 tmr.stop(TMR_MAIN)
                 tmr.start(TMR_GET)
