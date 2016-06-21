@@ -12,7 +12,7 @@ app                 = Flask(__name__)
 STATUS              = False
 TIME                = None
 
-LIMIT_TIME          = 0
+LIMIT_TIME          = 20
 LIMIT_PLAYER        = 0
 
 CLIENTS             = []
@@ -89,6 +89,14 @@ def List():
                    teamRed=TEAM_RED)
 
 ################################## CLIENT ######################################
+
+#   RETURN SETTINGS FOR TIMER IN SECONDS
+@app.route("/settings", methods=['GET'])
+def Settings():
+    global LIMIT_TIME
+
+    content = str(LIMIT_TIME * 60)
+    return content
 
 #   RETURN OK IF THE GAME HAS STARTED
 @app.route("/wait", methods=['GET'])
