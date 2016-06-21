@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+##
+##  This script has been created for moug's project. Moug's project is owned
+##  by Capucine Thery. This script has been wrote by Loïc Juillet.
+##
 
 from datetime       import datetime, time
 from flask          import Flask, jsonify, request, render_template
@@ -19,37 +23,14 @@ NEXT_TEAM           = "RED"
 SCORE_RED           = 0
 SCORE_BLUE          = 0
 
+################################## SERVER ######################################
 
-#
 #   DISPLAY MOUG FACE
-#
 @app.route("/moug", methods=['GET'])
 def Moug():
     return render_template("moug.html")
 
-#
-#   COLLECT SCORE
-#
-@app.route("/score/<int:score>", methods=['GET'])
-def Score(score):
-    global CLIENTS, TEAM_RED, TEAM_BLUE, SCORE_RED, SCORE_BLUE
-    content = "Something went wrong..."
-
-    client = request.environ['REMOTE_ADDR']
-    print client
-    if client in CLIENTS :
-        if client in TEAM_RED :
-            SCORE_RED = SCORE_RED + score
-            content = str(score) + 'pts for TEAM_RED'
-        elif client in TEAM_BLUE :
-            SCORE_BLUE = SCORE_BLUE + score
-            content = str(score) + 'pts for TEAM_BLUE'
-    print content
-    return jsonify(content=content)
-
-#
 #   GET TRUE OR FALSE ACCORDING TO THE GAME STATUS
-#
 @app.route("/status", methods=['GET'])
 def Status():
     global CLIENTS, STATUS, TIME, TIME_LOCK, LAST_UPDATE
@@ -66,10 +47,7 @@ def Status():
                    clients=CLIENTS,
                    status=STATUS)
 
-
-#
 #   STOP GAME COUNTER AND SET STATUS TO FALSE
-#
 @app.route("/stop", methods=['GET'])
 def Stop():
     global CLIENTS, STATUS, TIME
@@ -85,10 +63,7 @@ def Stop():
         content = "No game instantiated"
     return jsonify(content=content)
 
-
-#
 #   START GAME COUNTER AND SET STATUS TO TRUE
-#
 @app.route("/start", methods=['GET'])
 def Start():
     global CLIENTS, STATUS, TIME, TIME_LOCK
@@ -102,10 +77,7 @@ def Start():
         content = "Game has already started"
     return jsonify(content=content)
 
-
-#
 #   LIST DEVICES IP CONNECTED
-#
 @app.route("/list", methods=['GET'])
 def List():
     global CLIENTS, TEAM_RED, TEAM_BLUE
@@ -116,10 +88,27 @@ def List():
                    teamBlue=TEAM_BLUE,
                    teamRed=TEAM_RED)
 
+################################## CLIENT ######################################
 
-#
-#   CONNECTION AND DISCONNECTION
-#
+#   COLLECT SCORE
+@app.route("/score/<int:score>", methods=['GET'])
+def Score(score):
+    global CLIENTS, TEAM_RED, TEAM_BLUE, SCORE_RED, SCORE_BLUE
+    content = "Something went wrong..."
+
+    client = request.environ['REMOTE_ADDR']
+    print client
+    if client in CLIENTS :
+        if client in TEAM_RED :
+            SCORE_RED = SCORE_RED + score
+            content = str(score) + 'pts for TEAM_RED'
+        elif client in TEAM_BLUE :
+            SCORE_BLUE = SCORE_BLUE + score
+            content = str(score) + 'pts for TEAM_BLUE'
+    print content
+    return content
+
+#   CONNECTION
 @app.route("/connection", methods=['GET'])
 def Connection():
     global CLIENTS, TEAM_RED, TEAM_BLUE, NEXT_TEAM
@@ -147,9 +136,9 @@ def Connection():
                 team = "BLUE"
             else :
                 content = "Something went wrong with NEXT_TEAM..."
-    return jsonify(content=content,
-                   team=team)
+    return team
 
+#   DISCONNECTION
 @app.route("/disconnection", methods=['GET'])
 def Disconnection():
     global CLIENTS
@@ -172,12 +161,11 @@ def Disconnection():
                 content = content + "NEUTRAL"
         else :
             content = "Was not connected"
-    return jsonify(content=content)
+    return content
 
+################################## UTILS #######################################
 
-#
 #   APPLY GAME SETTINGS
-#
 @app.route("/tutorial", methods=['POST'])
 def Tutorial():
     global LIMIT_TIME, LIMIT_PLAYER
@@ -197,10 +185,7 @@ def Tutorial():
                            duration=LIMIT_TIME,
                            participants=LIMIT_PLAYER)
 
-
-#
 #   SET GAME RULES
-#
 @app.route("/", methods=['GET'])
 def Index():
     global CLIENTS, TEAM_RED, TEAM_BLUE, STATUS, TIME
@@ -222,9 +207,7 @@ def Index():
                            status=STATUS)
 
 
-#
 #   404 HANDLER
-#
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('err404.html'), 404

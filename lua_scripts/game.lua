@@ -2,8 +2,10 @@
 TMR_WIFI    = 1
 TMR_MAIN    = 2
 TMR_PLAY    = 3
+TMR_GET     = 4
 SSID        = "MougPi"
 PASSWORD    = "password"
+PROBED      = false
 GET         = ""
 RESPONSE    = ""
 TEAM        = ""
@@ -11,6 +13,7 @@ SCORE       = 5
 TIMER       = 0
 STEP        = {
     "CONN",
+    "WAIT",
     "PLAY",
     "SEND",
     "DISC"
@@ -44,6 +47,8 @@ function get()
         conn:on("receive", function(sck, data)
             RESPONSE = data
             print(RESPONSE)
+            tmr.stop(TMR_GET)
+            tmr.start(TMR_MAIN)
         end)
         print("== Connect ==")
         conn:connect(80, "192.168.42.1")
@@ -55,6 +60,7 @@ function get()
         end)
     end
 end
+tmr.register(TMR_GET, 500, tmr.ALARM_AUTO, function() get() end)
 
 function play()
     if TIMER == 5 then
@@ -76,25 +82,56 @@ tmr.start(TMR_WIFI)
 
 function main()
     if tmr.state(TMR_WIFI) == false then
-        print(STEP[ID_STEP])
+        print(STEP[ID_STEP]..' '..tostring(PROBED))
         if STEP[ID_STEP] == "CONN" then
-            GET = "/connection"
-            get()
-            ID_STEP = ID_STEP + 1
+            if PROBED == false then
+                GET = "/connection"
+                PROBED = true
+                tmr.stop(TMR_MAIN)
+                tmr.start(TMR_GET)
+            else
+                PROBED = false
+                ID_STEP = ID_STEP + 1
+            end
+
+        elseif STEP[ID_STEP] == "WAIT" then
+            if PROBED == false then
+                GET = "/wait"
+                PROBED = true
+                tmr.stop(TMR_MAIN)
+                tmr.start(TMR_GET)
+            else
+                PROBED = false
+                ID_STEP = ID_STEP + 1
+            end
+
         elseif STEP[ID_STEP] == "PLAY" then
             ID_STEP = ID_STEP + 1
+            tmr.stop(TMR_MAIN)
             tmr.start(TMR_PLAY)
-            tmr.stop(TMR_MAIN)
+
         elseif STEP[ID_STEP] == "SEND" then
-            GET = "/score/"..SCORE
-            get()
-            ID_STEP = ID_STEP + 1
+            if PROBED == false then
+                GET = "/send/"..SCORE
+                PROBED = true
+                tmr.stop(TMR_MAIN)
+                tmr.start(TMR_GET)
+            else
+                PROBED = false
+                ID_STEP = ID_STEP + 1
+            end
+
         elseif STEP[ID_STEP] == "DISC" then
-            GET = "/disconnection"
-            get()
-            ID_STEP = 1
-            tmr.stop(TMR_MAIN)
+            if PROBED == false then
+                GET = "/disconnection"
+                PROBED = true
+                tmr.stop(TMR_MAIN)
+                tmr.start(TMR_GET)
+            else
+                PROBED = false
+                ID_STEP = 1
+            end
         end
     end
 end
-tmr.register(TMR_MAIN, 1000, tmr.ALARM_AUTO, function() main() end)
+tmr.register(TMR_MAIN, 500, tmr.ALARM_AUTO, function() main() end)
