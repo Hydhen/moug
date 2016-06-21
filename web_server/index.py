@@ -90,12 +90,12 @@ def List():
 
 ################################## CLIENT ######################################
 
-#   RETURN SETTINGS FOR TIMER IN SECONDS
+#   RETURN SETTINGS FOR TIMER IN MINUTES
 @app.route("/settings", methods=['GET'])
 def Settings():
     global LIMIT_TIME
 
-    content = str(LIMIT_TIME * 60)
+    content = str(LIMIT_TIME)
     return content
 
 #   RETURN OK IF THE GAME HAS STARTED
