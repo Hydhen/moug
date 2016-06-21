@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 ##
 ##  This script has been created for moug's project. Moug's project is owned
-##  by Capucine Thery. This script has been wrote by Loïc Juillet.
+##  by Capucine Thery. This script has been wrote by Loic Juillet.
 ##
 
 from datetime       import datetime, time
