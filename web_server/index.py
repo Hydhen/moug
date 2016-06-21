@@ -27,6 +27,25 @@ SCORE_BLUE          = 0
 def Moug():
     return render_template("moug.html")
 
+#
+#   COLLECT SCORE
+#
+@app.route("/score/<int:score>", methods=['GET'])
+def Score(score):
+    global CLIENTS, TEAM_RED, TEAM_BLUE, SCORE_RED, SCORE_BLUE
+    content = "Something went wrong..."
+
+    client = request.environ['REMOTE_ADDR']
+    print client
+    if client in CLIENTS :
+        if client in TEAM_RED :
+            SCORE_RED = SCORE_RED + score
+            content = str(score) + 'pts for TEAM_RED'
+        elif client in TEAM_BLUE :
+            SCORE_BLUE = SCORE_BLUE + score
+            content = str(score) + 'pts for TEAM_BLUE'
+    print content
+    return jsonify(content=content)
 
 #
 #   GET TRUE OR FALSE ACCORDING TO THE GAME STATUS

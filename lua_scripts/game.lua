@@ -59,6 +59,7 @@ end
 function play()
     if TIMER == 5 then
         SCORE = math.random() * 100
+        SCORE = math.floor(SCORE)
         tmr.stop(TMR_PLAY)
         tmr.start(TMR_MAIN)
     else
