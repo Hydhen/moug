@@ -9,10 +9,12 @@ PROBED      = false
 GET         = ""
 RESPONSE    = ""
 TEAM        = ""
-SCORE       = 5
+SCORE       = 0
 TIMER       = 0
 STEP        = {
     "CONN",
+    "TEAM",
+    "SETT",
     "WAIT",
     "PLAY",
     "SEND",
@@ -54,17 +56,18 @@ function connect()
 end
 function get()
     if tmr.state(TMR_WIFI) == false then
-        print("== Create connection ==")
         conn = net.createConnection(net.TCP, 0)
-        print("== Set receive callback ==")
         conn:on("receive", function(sck, data)
             RESPONSE = split(data, '\n')
+            if STEP[ID_STEP] == "SETT" then
+                print(data)
+                tmr.delay(1000)
+            end
             tmr.stop(TMR_GET)
             tmr.start(TMR_MAIN)
         end)
-        print("== Connect ==")
         conn:connect(80, "192.168.42.1")
-        print("== Set connection callback ==")
+        print('== GET ==')
         conn:on("connection", function(sck, data)
             sck:send("GET " .. GET .. " HTTP/1.1\r\n"
                      .. "Host: 192.168.42.1\r\n"
@@ -72,16 +75,16 @@ function get()
         end)
     end
 end
-tmr.register(TMR_GET, 500, tmr.ALARM_AUTO, function() get() end)
+tmr.register(TMR_GET, 500, tmr.ALARM_SEMI, function() get() end)
 
 function play()
-    if TIMER == 5 then
+    if TIMER == 0 then
         SCORE = math.random() * 100
         SCORE = math.floor(SCORE)
         tmr.stop(TMR_PLAY)
         tmr.start(TMR_MAIN)
     else
-        TIMER = TIMER + 1
+        TIMER = TIMER - 1
         print(TIMER)
     end
 end
@@ -94,8 +97,7 @@ tmr.start(TMR_WIFI)
 
 function main()
     if tmr.state(TMR_WIFI) == false then
-        print(STEP[ID_STEP]..' '..tostring(PROBED))
-        print('RES: '..tostring(RESPONSE))
+        print(STEP[ID_STEP]..' '..tostring(PROBED)..' '..tostring(TIMER))
         if STEP[ID_STEP] == "CONN" then
             if PROBED == false then
                 GET = "/connection"
@@ -105,6 +107,37 @@ function main()
             else
                 PROBED = false
                 ID_STEP = ID_STEP + 1
+                print(RESPONSE[6])
+            end
+
+        if STEP[ID_STEP] == "TEAM" then
+            if PROBED == false then
+                GET = "/team"
+                PROBED = true
+                tmr.stop(TMR_MAIN)
+                tmr.start(TMR_GET)
+            else
+                PROBED = false
+                print(RESPONSE[6])
+                if RESPONSE[6] == "BLUE" or RESPONSE[6] == "RED"
+                    TEAM = RESPONSE[6]
+                    ID_STEP = ID_STEP + 1
+                end
+            end
+
+        elseif STEP[ID_STEP] == "SETT" then
+            if PROBED == false then
+                GET = "/settings"
+                PROBED = true
+                tmr.stop(TMR_MAIN)
+                tmr.start(TMR_GET)
+            else
+                PROBED = false
+                print(RESPONSE[6])
+                if RESPONSE[6] != 0 then
+                    ID_STEP = ID_STEP + 1
+                    TIMER = RESPONSE[6] -- * 60
+                end
             end
 
         elseif STEP[ID_STEP] == "WAIT" then
@@ -115,10 +148,18 @@ function main()
                 tmr.start(TMR_GET)
             else
                 PROBED = false
-                ID_STEP = ID_STEP + 1
+                print(RESPONSE[6])
+                if RESPONSE[6] == "ok" then
+                    ID_STEP = ID_STEP + 1
+                end
             end
 
         elseif STEP[ID_STEP] == "PLAY" then
+            print ('-----')
+            print ('TEAM: '..TEAM)
+            print ('SETT: '..tostring(TIMER))
+            print ('-----')
+            tmr.delay(1000)
             ID_STEP = ID_STEP + 1
             tmr.stop(TMR_MAIN)
             tmr.start(TMR_PLAY)
@@ -132,6 +173,7 @@ function main()
             else
                 PROBED = false
                 ID_STEP = ID_STEP + 1
+                print(RESPONSE[6])
             end
 
         elseif STEP[ID_STEP] == "DISC" then
@@ -143,6 +185,7 @@ function main()
             else
                 PROBED = false
                 ID_STEP = 1
+                print(RESPONSE[6])
             end
         end
     end

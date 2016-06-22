@@ -12,7 +12,7 @@ app                 = Flask(__name__)
 STATUS              = False
 TIME                = None
 
-LIMIT_TIME          = 20
+LIMIT_TIME          = 0
 LIMIT_PLAYER        = 0
 
 CLIENTS             = []
@@ -90,6 +90,20 @@ def List():
 
 ################################## CLIENT ######################################
 
+#   RETURN TEAM COLOR
+@app.route("/team", methods=['GET'])
+def Team():
+    global TEAM_RED, TEAM_BLUE
+    content = "Something went wrong..."
+
+    client = request.environ['REMOTE_ADDR']
+    if client in TEAM_RED :
+        content = "RED"
+    elif client in TEAM_BLUE :
+        content = "BLUE"
+    return content
+
+
 #   RETURN SETTINGS FOR TIMER IN MINUTES
 @app.route("/settings", methods=['GET'])
 def Settings():
@@ -115,7 +129,6 @@ def Score(score):
     content = "Something went wrong..."
 
     client = request.environ['REMOTE_ADDR']
-    print client
     if client in CLIENTS :
         if client in TEAM_RED :
             SCORE_RED = SCORE_RED + score
@@ -134,26 +147,27 @@ def Connection():
     team = ""
 
     client = request.environ['REMOTE_ADDR']
-    if client == '127.0.0.1' :
-        content = "Welcome home"
+    if client in CLIENTS :
+        content = "Already connected as "
+        if client in TEAM_RED :
+            team = "RED"
+        elif client in TEAM_BLUE :
+            team = "BLUE"
     else :
-        if client in CLIENTS :
-            content = "Already connected"
+        CLIENTS.append(client)
+        content = "Connected as "
+        if NEXT_TEAM == "RED" :
+            TEAM_RED.append(client)
+            NEXT_TEAM = "BLUE"
+            content = content + "RED"
+            team = "RED"
+        elif NEXT_TEAM == "BLUE" :
+            TEAM_BLUE.append(client)
+            NEXT_TEAM = "RED"
+            content = content + "BLUE"
+            team = "BLUE"
         else :
-            CLIENTS.append(client)
-            content = "Connected as "
-            if NEXT_TEAM == "RED" :
-                TEAM_RED.append(client)
-                NEXT_TEAM = "BLUE"
-                content = content + "RED"
-                team = "RED"
-            elif NEXT_TEAM == "BLUE" :
-                TEAM_BLUE.append(client)
-                NEXT_TEAM = "RED"
-                content = content + "BLUE"
-                team = "BLUE"
-            else :
-                content = "Something went wrong with NEXT_TEAM..."
+            content = "Something went wrong with NEXT_TEAM..."
     return team
 
 #   DISCONNECTION
@@ -163,22 +177,19 @@ def Disconnection():
     content = "Something went wrong..."
 
     client = request.environ['REMOTE_ADDR']
-    if client == '127.0.0.1' :
-        content = "Welcome home"
-    else :
-        if client in CLIENTS :
-            CLIENTS.remove(client)
-            content = "Disconnected from "
-            if client in TEAM_RED :
-                TEAM_RED.remove(client)
-                content = content + "RED"
-            elif client in TEAM_BLUE :
-                TEAM_BLUE.remove(client)
-                content = content + "BLUE"
-            else :
-                content = content + "NEUTRAL"
+    if client in CLIENTS :
+        CLIENTS.remove(client)
+        content = "Disconnected from "
+        if client in TEAM_RED :
+            TEAM_RED.remove(client)
+            content = content + "RED"
+        elif client in TEAM_BLUE :
+            TEAM_BLUE.remove(client)
+            content = content + "BLUE"
         else :
-            content = "Was not connected"
+            content = content + "NEUTRAL"
+    else :
+        content = "Was not connected"
     return content
 
 ################################## UTILS #######################################
