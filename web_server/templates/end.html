@@ -9,9 +9,32 @@
 
 {% block content %}
 <div>
-    <video id="video" class="bg-video" autoplay
-           src="{{ url_for('static', filename='mp4/08-last5sec.mp4') }}">
+    <video id="video" class="bg-video" autoplay>
     </video>
+</div>
+
+<div class="row">
+    <div class="col-md-1">
+        <div class="blue">
+            <span id="blueScore" class="score scoreBlue"></span>
+            <div class="outer">
+                <div class="inner innerBlue">
+                    <div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-1">
+        <div class="red">
+            <span id="redScore" class="score scoreRed"></span>
+            <div class="outer">
+                <div class="inner innerRed">
+                    <div></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 

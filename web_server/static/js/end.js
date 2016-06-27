@@ -1,23 +1,34 @@
-console.log('SCORE_RED : ' + localStorage.redScore);
-console.log('SCORE_BLUE: ' + localStorage.blueScore);
+var red = Number(localStorage.redScore);
+var blue = Number(localStorage.blueScore);
 
+if (red > blue) {
+    videoName = "09-winner-jaune";
+    var tmp = (blue * 100) / red;
+    blue = tmp + "%";
+    red = "100%";
+} else if (red < blue) {
+    videoName = "09-winner-bleu";
+    var tmp = (red * 100) / blue;
+    red = tmp + "%";
+    blue = "100%";
+} else {
+    videoName = "09-winner-nul";
+    red = "100%"
+    blue = "100%"
+}
 
-// document.getElementById('video').addEventListener('ended', nextStep, false);
-//
-// console.log(localStorage.duration);
-//
-// function nextStep(e) {
-//     if (videoIndex > (videoList.length - 1)) {
-//         var xmlHttp = new XMLHttpRequest();
-//         xmlHttp.onreadystatechange = function() {
-//             if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-//                 console.log(xmlHttp.responseText);
-//         }
-//         xmlHttp.open("GET", "/start", true); // true for asynchronous
-//         xmlHttp.send(null);
-//         window.location.href = "/moug";
-//     }
-//     $('video').attr('src', '/static/mp4/' + videoList[videoIndex] + '.mp4');
-//     videoIndex = videoIndex + 1;
-//     $('video').load();
-// }
+$('video').attr('src', '/static/mp4/' + videoName + '.mp4');
+$('video').load();
+
+$('#blueScore').html(localStorage.blueScore);
+$('#redScore').html(localStorage.redScore);
+
+var blueBar = $('.blue').find('.inner');
+$(blueBar).animate({
+    height: blue
+}, 1500);
+
+var redBar = $('.red').find('.inner');
+$(redBar).animate({
+    height: red
+}, 1500);

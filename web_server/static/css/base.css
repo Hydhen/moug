@@ -17,3 +17,13 @@
     font-family: proxima, Arial;
     line-height: 100%;
 }
+
+@font-face {
+    font-family: skater;
+    src: url(../fonts/skater-girls-rock.ttf);
+}
+
+.skater {
+    font-family: skater, Arial;
+    line-height: 100%;
+}

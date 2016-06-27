@@ -1,0 +1,49 @@
+.outer {
+    width: 30px;
+    height: 600px;
+    overflow: hidden;
+
+    position: relative;
+}
+
+.inner, .inner div {
+    width: 100%;
+    overflow: hidden;
+    position: absolute;
+}
+
+.inner {
+    border-top-width: 0;
+    bottom: 0;
+    height: 0%;
+}
+
+.inner div {
+    top: 0;
+    width: 100%;
+    height: 5px;
+}
+
+.innerBlue {
+    background-color: #2391BF;
+}
+
+.innerRed {
+    background-color: #FFA700;
+}
+
+.blue {
+    margin-left: 890px;
+    margin-top: 270px;
+}
+
+.red {
+    margin-left: 900px;
+    margin-top: 270px;
+}
+
+.score {
+    font-family: skater;
+    font-size: 72px;
+    color: #8B2739;
+}

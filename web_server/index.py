@@ -20,8 +20,8 @@ TEAM_RED            = []
 TEAM_BLUE           = []
 NEXT_TEAM           = "RED"
 
-SCORE_RED           = 10
-SCORE_BLUE          = 15
+SCORE_RED           = 5
+SCORE_BLUE          = 5
 
 ################################## SERVER ######################################
 
