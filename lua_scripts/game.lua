@@ -59,10 +59,6 @@ function get()
         conn = net.createConnection(net.TCP, 0)
         conn:on("receive", function(sck, data)
             RESPONSE = split(data, '\n')
-            if STEP[ID_STEP] == "SETT" then
-                print(data)
-                tmr.delay(1000)
-            end
             tmr.stop(TMR_GET)
             tmr.start(TMR_MAIN)
         end)
@@ -110,7 +106,7 @@ function main()
                 print(RESPONSE[6])
             end
 
-        if STEP[ID_STEP] == "TEAM" then
+        elseif STEP[ID_STEP] == "TEAM" then
             if PROBED == false then
                 GET = "/team"
                 PROBED = true
@@ -119,7 +115,7 @@ function main()
             else
                 PROBED = false
                 print(RESPONSE[6])
-                if RESPONSE[6] == "BLUE" or RESPONSE[6] == "RED"
+                if RESPONSE[6] == "BLUE" or RESPONSE[6] == "RED" then
                     TEAM = RESPONSE[6]
                     ID_STEP = ID_STEP + 1
                 end
@@ -134,7 +130,7 @@ function main()
             else
                 PROBED = false
                 print(RESPONSE[6])
-                if RESPONSE[6] != 0 then
+                if tonumber(RESPONSE[6]) > 0 then
                     ID_STEP = ID_STEP + 1
                     TIMER = RESPONSE[6] -- * 60
                 end
@@ -155,11 +151,6 @@ function main()
             end
 
         elseif STEP[ID_STEP] == "PLAY" then
-            print ('-----')
-            print ('TEAM: '..TEAM)
-            print ('SETT: '..tostring(TIMER))
-            print ('-----')
-            tmr.delay(1000)
             ID_STEP = ID_STEP + 1
             tmr.stop(TMR_MAIN)
             tmr.start(TMR_PLAY)
