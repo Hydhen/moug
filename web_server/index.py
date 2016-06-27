@@ -20,10 +20,25 @@ TEAM_RED            = []
 TEAM_BLUE           = []
 NEXT_TEAM           = "RED"
 
-SCORE_RED           = 0
-SCORE_BLUE          = 0
+SCORE_RED           = 10
+SCORE_BLUE          = 15
 
 ################################## SERVER ######################################
+
+#   PRINT SCORES
+@app.route("/end", methods=['GET'])
+def End():
+    global SCORE_RED, SCORE_BLUE
+
+    return render_template("end.html", red=SCORE_RED, blue=SCORE_BLUE)
+
+#   RETURN SETTINGS FOR TIMER IN MINUTES
+@app.route("/settings-home", methods=['GET'])
+def SettingsHome():
+    global LIMIT_TIME
+
+    content = str(LIMIT_TIME)
+    return jsonify(content=content)
 
 #   DISPLAY MOUG FACE
 @app.route("/moug", methods=['GET'])
@@ -46,6 +61,17 @@ def Status():
     return jsonify(content=content,
                    clients=CLIENTS,
                    status=STATUS)
+
+#   RESET ALL GLOBAL VARS FOR GAME
+@app.route("/reset", methods=['GET'])
+def Reset():
+    global STATUS, TIME, LIMIT_TIME, LIMIT_PLAYER, SCORE_RED, SCORE_BLUE
+
+    STATUS = False
+    TIME = None
+    LIMIT_TIME, LIMIT_PLAYER, SCORE_RED, SCORE_BLUE = 0
+    content = "ok"
+    return jsonify(content=content)
 
 #   STOP GAME COUNTER AND SET STATUS TO FALSE
 @app.route("/stop", methods=['GET'])

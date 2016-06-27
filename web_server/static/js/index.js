@@ -68,5 +68,19 @@ $('#right').click(function() {
 
 // CAROUSEL WILL NOT AUTOPLAY
 $('.carousel').carousel({
-  interval: 0
+    interval: 0
+});
+
+// SAVE TIME IN LOCALSTORAGE ON SUBMIT
+$('#gameForm').submit(function() {
+    var duration = $('#duree').val();
+    console.log(duration);
+    if (typeof(Storage) !== "undefined") {
+        console.log(localStorage);
+        localStorage.duration = duration;
+        console.log(localStorage);
+        console.log("From localStorage: " + localStorage.duration);
+    } else {
+        console.log("No web storage :-(");
+    }
 });

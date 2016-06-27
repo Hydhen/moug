@@ -9,6 +9,8 @@ var videoList = [
 
 document.getElementById('video').addEventListener('ended', nextStep, false);
 
+console.log(localStorage.duration);
+
 function nextStep(e) {
     if (videoIndex > (videoList.length - 1)) {
         var xmlHttp = new XMLHttpRequest();
