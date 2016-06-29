@@ -1,11 +1,13 @@
 TMR_GAME    = 0
 TMR_WIFI    = 1
 TMR_GET     = 2
+TMR_GAME_TEST = 3
 
 SSID        = "MougPi"
 PASSWORD    = "password"
 
-GET         = "/"
+GET         = "/connection"
+RESPONSE    = ""
 
 function config()
     wifi.setmode(wifi.STATION)
@@ -23,6 +25,7 @@ function connect()
         print("The module MAC address is: " .. wifi.ap.getmac ())
         print("Config done, IP is " .. wifi.sta.getip ())
         tmr.stop(TMR_WIFI)
+        tmr.start(TMR_GAME_TEST)
     end
 end
 
@@ -33,9 +36,7 @@ function get()
 
         print("== Set receive callback ==")
         conn:on("receive", function(sck, data)
-            print("::R::")
-            print(data)
-            print(":::::")
+            GET_RESPONSE = data
         end)
 
         print("== Connect ==")
@@ -51,8 +52,7 @@ function get()
                      .. "Host: 192.168.42.1\r\n"
                      .. "Connection: keep-alive\r\nAccept: */*\r\n\r\n")
         end)
-        tmr.stop(TMR_GET)
-        tmr.start(3)
+--        tmr.stop(TMR_GET)
     end
 end
 
@@ -61,13 +61,61 @@ config()
 tmr.register(TMR_WIFI, 1000, tmr.ALARM_AUTO, function() connect() end)
 tmr.start(TMR_WIFI)
 
-tmr.register(TMR_GET, 1000, tmr.ALARM_AUTO, function() get() end)
-tmr.start(TMR_GET)
+--tmr.register(TMR_GET, 1000, tmr.ALARM_AUTO, function() get() end)
+--tmr.start(TMR_GET)
 
-tmr.register(3, 1000, tmr.ALARM_AUTO, function()
-    print("Old GET : " .. GET)
-    GET = "/connection"
-    print("New GET : " .. GET)
-    tmr.stop(3)
-    tmr.start(TMR_GET)
+function mysplit(inputstr, sep)
+        if sep == nil then
+                sep = "%s"
+        end
+        local t={} ; i=1
+        for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+                t[i] = str
+                i = i + 1
+        end
+        return t
+end
+
+STEP = [
+    "CONN",
+    "PLAY",
+    "SEND",
+    "DISC"
+]
+
+ID_STEP = 1
+
+tmr.register(TMR_GAME_TEST, 1000, tmr.ALARM_AUTO, function()
+--    print("Old GET : " .. GET)
+--    GET = "/connection"
+--    print("New GET : " .. GET)
+    if tmr.state(TMR_GAME_TEST) == true then
+        if GET_RESPONSE == nil then
+            print("GET_RESPONSE nil")
+        else
+            print('---')
+            print(GET_RESPONSE)
+            print('---')
+            wordtab = mysplit(GET_RESPONSE, '\n')
+            print('wordtab 1: '..wordtab[1])
+            print('wordtab 6: '..wordtab[6])
+        end
+        if STEP[ID_STEP] == "CONN" then
+
+    end
+--    while GET_RESPONSE == "" do
+--        print('waiting TMR_GET...')
+--        tmr.delay(100)
+--    end
+--    print("--- RESPONSE ---")
+--    print(response)
+--    print("---  ---")
+--    local junk, nugget = response.split("{")
+--    print('nugget: ')
+--    print(nugget)
+--    nugget, junk = nugget.split("}")
+--    print('nugget: ')
+--    print(nugget)
+--    tmr.stop(TMR_GAME_TEST)
+--    tmr.start(TMR_GET)
 end)
