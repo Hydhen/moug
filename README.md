@@ -30,4 +30,5 @@ Il faut :
 ## En savoir plus
 
 Pour en savoir plus sur le projet, consultez le site web de [Moug](http://www.moug.fr)
+
 Pour en savoir plus sur l'installation et la configuration, consultez le wiki !
